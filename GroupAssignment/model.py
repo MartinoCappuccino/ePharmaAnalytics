@@ -10,38 +10,38 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def train(X, y, num_components, degrees=[1,2], use_pca=[True, False], solverType='lbfgs', penaltyType='l2', penaltyStrength=1):
+def train(X, y, num_components, degrees=[1,2], use_pca=[True, False], penaltyTypes=['l1','l2'], penaltyStrengths=[1,2]):
     y = y["ALDH1_inhibition"]
     # Create a PCA object
     best_score = 0
     best_model = None
-    for use_pca_value in use_pca:
-        for degree in degrees:
-            poly = PolynomialFeatures(degree=degree, include_bias=False)
+    for penaltyType in penaltyTypes:
+        for penaltyStrength in penaltyStrengths:
+            for use_pca_value in use_pca:
+                for degree in degrees:
+                    poly = PolynomialFeatures(degree=degree, include_bias=False)
 
-            pca = PCA(n_components=num_components)
+                    pca = PCA(n_components=num_components)
 
-            # Create a classifier (e.g., Random Forest Classifier)
-            regressor = LogisticRegression(class_weight='balanced', max_iter=2500, solver=solverType, penalty=penaltyType, C=penaltyStrength)
+                    # Create a classifier (e.g., Random Forest Classifier)
+                    regressor = LogisticRegression(class_weight='balanced', max_iter=2500, solver='saga', penalty=penaltyType, C=penaltyStrength)
 
 
-            if use_pca_value:
-                # Create a pipeline with PCA and the classifier
-                pipeline = Pipeline([('poly', poly), ('pca', pca), ('regressor', regressor)])
-            else:
-                pipeline = Pipeline([('poly', poly), ('regressor', regressor)])
+                    if use_pca_value:
+                        # Create a pipeline with PCA and the classifier
+                        pipeline = Pipeline([('poly', poly), ('pca', pca), ('regressor', regressor)])
+                    else:
+                        pipeline = Pipeline([('poly', poly), ('regressor', regressor)])
 
-            scores = cross_val_score(pipeline, X, y, cv=5)
-            avg_score = np.mean(scores)
-            if avg_score > best_score:
-                best_score = avg_score
-                best_model = pipeline
-            
-            #with open('results_C_nc.txt', 'a') as f:
-            #    f.write(str(degree) + ' ' + str(use_pca_value) + ' ' + str(avg_score) + '\n')
-            print(f"Degree: {degree}, Use_PCA: {use_pca_value}")
-            print("Cross-validation scores:", scores)
-            print("Average score:", avg_score)
+                    scores = cross_val_score(pipeline, X, y, cv=5)
+                    avg_score = np.mean(scores)
+                    if avg_score > best_score:
+                        best_score = avg_score
+                        best_model = pipeline
+
+                    print(f"Degree: {degree}, Use_PCA: {use_pca_value}, penaltyType: {penaltyType}, penaltyStrength: {penaltyStrength}")
+                    print("Cross-validation scores:", scores)
+                    print("Average score:", avg_score)
     
     best_model.fit(X,y)
     return best_model

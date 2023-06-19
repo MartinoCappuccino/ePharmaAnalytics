@@ -15,7 +15,7 @@ def correlation(descriptors):
     # Loop through the correlation matrix and find pairs with correlations higher than 0.9
     for i in range(len(corr_matrix.columns)):
         for j in range(i + 1, len(corr_matrix.columns)):
-            if corr_matrix.iloc[i, j] > 0.9:
+            if corr_matrix.iloc[i, j] > 0.95:
                 # Add the pair of column names to the list
                 pair = (corr_matrix.columns[i], corr_matrix.columns[j])
                 highly_correlated_pairs.append(pair)
