@@ -24,7 +24,7 @@ def train(X, y, num_components, degrees=[1,2], use_pca=[True, False], penaltyTyp
                     pca = PCA(n_components=num_components)
 
                     # Create a classifier (e.g., Random Forest Classifier)
-                    regressor = LogisticRegression(class_weight='balanced', max_iter=2500, solver='saga', penalty=penaltyType, C=penaltyStrength)
+                    regressor = LogisticRegression(class_weight='balanced', max_iter=2500, solver='liblinear', penalty=penaltyType, C=penaltyStrength)
 
 
                     if use_pca_value:
