@@ -7,7 +7,7 @@ python -m pip install rdkit matplotlib scikit-learn seaborn pandas numpy
 ```
 
 ## Usage
-Open the notebook `Group_assignment_notebook.ipynb` and start running the cells.
+Open the notebook `Notebook.ipynb` and start running the cells.
 
 ## License
 Free to use
